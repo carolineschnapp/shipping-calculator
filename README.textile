@@ -1,4 +1,5 @@
 To use in Shopify to add a shipping calculator to your cart page.
+
 h2. Dependencies
 
 jQuery > 1.3
