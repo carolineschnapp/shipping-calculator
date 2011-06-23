@@ -1,4 +1,4 @@
-To use in Shopify to add a shipping calculator to your cart page.
+To use in Shopify to add a shipping rates calculator to your cart page. Relies on a JSON API to fetch rates based on country, state/province and zip code.
 
 h2. Dependencies
 
