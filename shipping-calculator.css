@@ -1,0 +1,63 @@
+/* Shipping Calculator Styles */
+
+#shipping-calculator {
+width: 320px;
+background-color: #F2F2F2;
+border: 1px solid #DEDBDB;
+padding: 15px 15px 5px 15px;
+margin: 30px 0;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+clear: both;
+overflow: hidden;
+float: right;
+}
+
+#shipping-calculator h3 {
+font-size: 14px;
+margin: 0.5em 0;
+}
+
+#shipping-calculator select  {
+width: 150px;
+}
+
+#shipping-calculator input[type="text"]  {
+width: 138px;
+}
+
+#shipping-calculator p {
+margin-bottom: 15px;
+}
+
+#shipping-calculator label {
+display: block;
+line-height: 1.6;
+font-size: 12px;
+font-weight: normal;
+}
+
+#wrapper-response {
+margin-bottom: 15px;
+}
+
+#wrapper-response * {
+font-size: 12px;
+}
+
+#shipping-rates {
+list-style-type: square;
+padding-left: 0;
+margin-left: 0;
+list-style-position: inside;
+}
+
+#address_province_container {
+float: right;
+margin-left: 20px;
+}
+
+.get_rates {
+margin-left: 15px;
+}
