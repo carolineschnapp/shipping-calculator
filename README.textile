@@ -11,9 +11,3 @@ api.jquery.js
 h2. Installation
 
 "http://wiki.shopify.com/Adding_a_Shipping_Rates_Calculator_to_your_Cart_Page":http://wiki.shopify.com/Adding_a_Shipping_Rates_Calculator_to_your_Cart_Page
-
-h2. Configuration
-
-Configuration parameters are all optional.
-
-You pass an object to Shopify.Cart.ShippingCalculator().
