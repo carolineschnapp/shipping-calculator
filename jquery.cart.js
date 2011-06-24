@@ -61,7 +61,7 @@ Shopify.Cart.ShippingCalculator = (function() {
     }    
     if (feedback === 'Error : country is not supported.') feedback = 'We do not ship to this destination.';
     // Update calculator.
-    _render( { rates: [], feedback: feedback, success: false } );
+    _render( { rates: [], errorFeedback: feedback, success: false } );
     jQuery('#' + _config.wrapperId).show();
   };  
   Shopify.onCartShippingRatesUpdate = function(rates, shipping_address) {
