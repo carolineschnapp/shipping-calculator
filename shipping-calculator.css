@@ -8,6 +8,11 @@ clear: both;
 overflow: hidden;
 }
 
+.country {
+position: relative;
+top: 0.6em;
+}
+
 #shipping-calculator h3 {
 font-size: 14px;
 margin: 0.5em 0;
@@ -22,7 +27,7 @@ width: 138px;
 }
 
 #shipping-calculator p {
-margin-bottom: 15px;
+margin-bottom: 0.2em;
 }
 
 #shipping-calculator label {
@@ -53,5 +58,5 @@ margin-left: 20px;
 }
 
 .get_rates {
-margin-left: 15px;
+margin-left: 15px !important;
 }
