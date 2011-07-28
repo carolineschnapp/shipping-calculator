@@ -30,7 +30,7 @@
   <p id="shipping-rates-feedback" class="{{if success}}success{{else}}error{{/if}}">
   {{if success}}
     {{if rates.length > 1}}
-    There are ${rates.length} shipping rates available for ${address}, starting at ${Shopify.formatMoney(rates[0].price)}.
+    There are ${rates.length} shipping rates available for ${address}, starting at {{html Shopify.formatMoney(rates[0].price)}}.
     {{else}}
       {{if rates.length == 1}}
       There is one shipping rate available for ${address}.
@@ -44,7 +44,7 @@
   </p>
   <ul id="shipping-rates">
     {{each( index, rate ) rates}}
-    <li>${rate.name} at ${Shopify.formatMoney(rate.price)}</li>
+    <li>${rate.name} at {{html Shopify.formatMoney(rate.price)}}</li>
     {{/each}}
   </ul>
   {% endraw %} 
