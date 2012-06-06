@@ -1,7 +1,7 @@
 /**
  * Module to add a shipping rates calculator to cart page.
  *
- * Copyright (c) 2011 Caroline Schnapp (11heavens.com)
+ * Copyright (c) 2011-2012 Caroline Schnapp (11heavens.com)
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
@@ -26,6 +26,7 @@ if (typeof Countries === 'object') {
 if (typeof Shopify.Cart === 'undefined') {
   Shopify.Cart = {}
 }
+// Creating a module to encapsulate this.
 Shopify.Cart.ShippingCalculator = (function() {  
   var _config = {
     submitButton: 'Calculate shipping', 
@@ -59,7 +60,35 @@ Shopify.Cart.ShippingCalculator = (function() {
   var _disableButtons = function() {
     jQuery('.get_rates').val(_config.submitButtonDisabled).attr('disabled','disabled').addClass('disabled');
   };
-  Shopify.onError = function(XMLHttpRequest, textStatus) {
+  // ---------------------------------------------------------
+  // GET cart/shipping_rates.js returns the cart in JSON.
+  // ---------------------------------------------------------
+  var _getCartShippingRatesForDestination = function(shipping_address) {
+    var params = {
+      type: 'GET',
+      url: '/cart/shipping_rates.json',
+      data: jQuery.param({'shipping_address': shipping_address}),
+      dataType: 'json',
+      success: function(response) { 
+        rates = response.shipping_rates
+        _onCartShippingRatesUpdate(rates, shipping_address);
+      },
+      error: function(XMLHttpRequest, textStatus) {
+        _onError(XMLHttpRequest, textStatus);
+      }
+    }
+    jQuery.ajax(params);
+  };
+  var _fullMessagesFromErrors = function(errors) {
+    var fullMessages = [];
+    jQuery.each(errors, function(attribute, messages) {
+      jQuery.each(messages, function(index, message) {
+        fullMessages.push(attribute + ' ' + message);
+      });
+    });
+    return fullMessages
+  };
+  var _onError = function(XMLHttpRequest, textStatus) {
     // Re-enable calculate shipping buttons.
     _enableButtons();
     // Formatting error message.
@@ -69,14 +98,14 @@ Shopify.Cart.ShippingCalculator = (function() {
       feedback = data.message + '(' + data.status  + '): ' + data.description;
     } 
     else {
-      feedback = 'Error : ' + Shopify.fullMessagesFromErrors(data).join('; ');
+      feedback = 'Error : ' + _fullMessagesFromErrors(data).join('; ');
     }    
     if (feedback === 'Error : country is not supported.') feedback = 'We do not ship to this destination.';
     // Update calculator.
     _render( { rates: [], errorFeedback: feedback, success: false } );
     jQuery('#' + _config.wrapperId).show();
   };  
-  Shopify.onCartShippingRatesUpdate = function(rates, shipping_address) {
+  var _onCartShippingRatesUpdate = function(rates, shipping_address) {
     // Re-enable calculate shipping buttons.
     _enableButtons();
     // Formatting shipping address.
@@ -112,19 +141,19 @@ Shopify.Cart.ShippingCalculator = (function() {
       shippingAddress.zip = jQuery('#address_zip').val() || '';
       shippingAddress.country = jQuery('#address_country').val() || '';
       shippingAddress.province = jQuery('#address_province').val() || '';
-      Shopify.getCartShippingRatesForDestination(shippingAddress);
+      _getCartShippingRatesForDestination(shippingAddress);
     });
     // We don't wait for customer to click if we know his/her address.
     if (_config.customerIsLoggedIn) {
-        jQuery('.get_rates:eq(0)').trigger('click');
-    }   
-  };  
-  return {    
-    show: function(params) {      
+      jQuery('.get_rates:eq(0)').trigger('click');
+    }
+  };
+  return {
+    show: function(params) {
         // Configuration
         params = params || {};
         // Merging with defaults.
-        jQuery.extend(_config, params);        
+        jQuery.extend(_config, params);
         // Action
         jQuery(function() {
           _init();
