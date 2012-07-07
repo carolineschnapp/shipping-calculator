@@ -18,6 +18,9 @@ if (typeof Countries === 'object') {
         if (provinceLabelElement === null) return;
       }
       provinceLabelElement.innerHTML = Countries[country].label;
+      var provinceContainer = $(provinceLabelElement).parent();
+      var provinceSelect = provinceContainer.find('select');
+      provinceContainer.find('.custom-style-select-box-inner').html(provinceSelect.val());
     }
   };
 }
@@ -56,10 +59,10 @@ Shopify.Cart.ShippingCalculator = (function() {
     }
   };  
   var _enableButtons = function() {
-   jQuery('.get_rates').removeAttr('disabled').removeClass('disabled').val(_config.submitButton);
+    jQuery('.get-rates').removeAttr('disabled').removeClass('disabled').val(_config.submitButton).html(_config.submitButton);
   };
   var _disableButtons = function() {
-    jQuery('.get_rates').val(_config.submitButtonDisabled).attr('disabled','disabled').addClass('disabled');
+    jQuery('.get-rates').val(_config.submitButtonDisabled).html(_config.submitButtonDisabled).attr('disabled','disabled').addClass('disabled');
   };
   // ---------------------------------------------------------
   // GET cart/shipping_rates.js returns the cart in JSON.
@@ -90,6 +93,8 @@ Shopify.Cart.ShippingCalculator = (function() {
     return fullMessages
   };
   var _onError = function(XMLHttpRequest, textStatus) {
+    jQuery('#estimated-shipping').hide();
+    jQuery('#estimated-shipping em').empty();
     // Re-enable calculate shipping buttons.
     _enableButtons();
     // Formatting error message.
@@ -116,8 +121,39 @@ Shopify.Cart.ShippingCalculator = (function() {
     readable_address += shipping_address.country;
     // Show rates and feedback.
     _render( { rates: rates, address: readable_address, success:true } );
+    // Show estimated shipping.
+    jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
     // Revealing response.
-    jQuery('#' + _config.wrapperId).fadeIn();
+    jQuery('#' + _config.wrapperId + ', #estimated-shipping').fadeIn();
+  };
+  var _formatRate = function(cents) {
+    if (typeof cents == 'string') cents = cents.replace('.','');
+    var value = '';
+    var patt = /\{\{\s*(\w+)\s*\}\}/;
+    var formatString = _config.moneyFormat;
+    function addCommas(moneyString) {
+      return moneyString.replace(/(\d+)(\d{3}[\.,]?)/,'$1,$2');
+    }
+    function floatToString(numeric, decimals) {  
+      var amount = numeric.toFixed(decimals).toString();  
+      if(amount.match(/^\.\d+/)) {return "0"+amount; }
+      else { return amount; }
+    }
+    switch(formatString.match(patt)[1]) {
+      case 'amount':
+        value = addCommas(floatToString(cents/100.0, 2));
+        break;
+      case 'amount_no_decimals':
+        value = addCommas(floatToString(cents/100.0, 0));
+        break;
+      case 'amount_with_comma_separator':
+        value = floatToString(cents/100.0, 2).replace(/\./, ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = addCommas(floatToString(cents/100.0, 0)).replace(/\./, ',');
+        break;
+    }
+    return formatString.replace(patt, value);        
   };  
   _init = function() {
     // Initialize observer on shipping address.
@@ -132,7 +168,7 @@ Shopify.Cart.ShippingCalculator = (function() {
       });
     }
     // When either of the calculator buttons is clicked, get rates.
-    jQuery('.get_rates').click(function() {
+    jQuery('.get-rates').click(function() {
       // Disabling all buttons.
       _disableButtons();
       // Hiding response.
@@ -146,7 +182,7 @@ Shopify.Cart.ShippingCalculator = (function() {
     });
     // We don't wait for customer to click if we know his/her address.
     if (_config.customerIsLoggedIn) {
-      jQuery('.get_rates:eq(0)').trigger('click');
+      jQuery('.get-rates:eq(0)').trigger('click');
     }
   };
   return {
@@ -164,33 +200,7 @@ Shopify.Cart.ShippingCalculator = (function() {
       return _config;
     },
     formatRate: function(cents) {
-      if (typeof cents == 'string') cents = cents.replace('.','');
-      var value = '';
-      var patt = /\{\{\s*(\w+)\s*\}\}/;
-      var formatString = _config.moneyFormat;
-      function addCommas(moneyString) {
-        return moneyString.replace(/(\d+)(\d{3}[\.,]?)/,'$1,$2');
-      }
-      function floatToString(numeric, decimals) {  
-        var amount = numeric.toFixed(decimals).toString();  
-        if(amount.match(/^\.\d+/)) {return "0"+amount; }
-        else { return amount; }
-      }
-      switch(formatString.match(patt)[1]) {
-        case 'amount':
-          value = addCommas(floatToString(cents/100.0, 2));
-          break;
-        case 'amount_no_decimals':
-          value = addCommas(floatToString(cents/100.0, 0));
-          break;
-        case 'amount_with_comma_separator':
-          value = floatToString(cents/100.0, 2).replace(/\./, ',');
-          break;
-        case 'amount_no_decimals_with_comma_separator':
-          value = addCommas(floatToString(cents/100.0, 0)).replace(/\./, ',');
-          break;
-      }
-      return formatString.replace(patt, value);        
-    }    
+      return _formatRate(cents);
+    }
   }  
 })();
