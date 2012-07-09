@@ -53,7 +53,7 @@ Shopify.Cart.ShippingCalculator = (function() {
           newCurrency = jQuery('#currencies span.selected').attr('data-currency');
         }
         if (newCurrency !== '') {
-          Currency.convertAll(shopCurrency, newCurrency, '#wrapper-response span.money');
+          Currency.convertAll(shopCurrency, newCurrency, '#wrapper-response span.money, #estimated-shipping em span.money');
         }
       }
     }
@@ -119,10 +119,10 @@ Shopify.Cart.ShippingCalculator = (function() {
     if (shipping_address.zip) readable_address += shipping_address.zip + ', ';
     if (shipping_address.province) readable_address += shipping_address.province + ', ';
     readable_address += shipping_address.country;
-    // Show rates and feedback.
-    _render( { rates: rates, address: readable_address, success:true } );
     // Show estimated shipping.
     jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
+    // Show rates and feedback.
+    _render( { rates: rates, address: readable_address, success:true } );
     // Revealing response.
     jQuery('#' + _config.wrapperId + ', #estimated-shipping').fadeIn();
   };
