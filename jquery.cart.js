@@ -112,8 +112,6 @@ Shopify.Cart.ShippingCalculator = (function() {
     jQuery('#' + _config.wrapperId).show();
   };  
   var _onCartShippingRatesUpdate = function(rates, shipping_address) {
-      
-    alert('hello');
     // Re-enable calculate shipping buttons.
     _enableButtons();
     // Formatting shipping address.
