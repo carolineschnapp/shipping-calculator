@@ -59,10 +59,10 @@ Shopify.Cart.ShippingCalculator = (function() {
     }
   };  
   var _enableButtons = function() {
-    jQuery('.get-rates').removeAttr('disabled').removeClass('disabled').val(_config.submitButton).html(_config.submitButton);
+    jQuery('.get-rates').removeAttr('disabled').removeClass('disabled').val(_config.submitButton);
   };
   var _disableButtons = function() {
-    jQuery('.get-rates').val(_config.submitButtonDisabled).html(_config.submitButtonDisabled).attr('disabled','disabled').addClass('disabled');
+    jQuery('.get-rates').val(_config.submitButtonDisabled).attr('disabled','disabled').addClass('disabled');
   };
   // ---------------------------------------------------------
   // GET cart/shipping_rates.js returns the cart in JSON.
@@ -112,6 +112,8 @@ Shopify.Cart.ShippingCalculator = (function() {
     jQuery('#' + _config.wrapperId).show();
   };  
   var _onCartShippingRatesUpdate = function(rates, shipping_address) {
+      
+    alert('hello');
     // Re-enable calculate shipping buttons.
     _enableButtons();
     // Formatting shipping address.
@@ -120,6 +122,12 @@ Shopify.Cart.ShippingCalculator = (function() {
     if (shipping_address.province) readable_address += shipping_address.province + ', ';
     readable_address += shipping_address.country;
     // Show estimated shipping.
+    if (rates[0].price == '0.00') {
+      jQuery('#estimated-shipping em').html('FREE');
+    }
+    else {
+      jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
+    }
     jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
     // Show rates and feedback.
     _render( { rates: rates, address: readable_address, success:true } );
