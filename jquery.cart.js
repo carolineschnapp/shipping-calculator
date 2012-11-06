@@ -20,7 +20,7 @@ if (typeof Countries === 'object') {
       provinceLabelElement.innerHTML = Countries[country].label;
       var provinceContainer = $(provinceLabelElement).parent();
       var provinceSelect = provinceContainer.find('select');
-      provinceContainer.find('.custom-style-select-box-inner').html(provinceSelect.val());
+      provinceContainer.find('.custom-style-select-box-inner').html(Countries[country].provinces[0]);
     }
   };
 }
