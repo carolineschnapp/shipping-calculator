@@ -120,13 +120,14 @@ Shopify.Cart.ShippingCalculator = (function() {
     if (shipping_address.province) readable_address += shipping_address.province + ', ';
     readable_address += shipping_address.country;
     // Show estimated shipping.
-    if (rates[0].price == '0.00') {
-      jQuery('#estimated-shipping em').html('FREE');
+    if (rates.length) {
+      if (rates[0].price == '0.00') {
+        jQuery('#estimated-shipping em').html('FREE');
+      }
+      else {
+        jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
+      }      
     }
-    else {
-      jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
-    }
-    jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
     // Show rates and feedback.
     _render( { rates: rates, address: readable_address, success:true } );
     // Revealing response.
