@@ -1,5 +1,19 @@
 {% unless settings.shipping_calculator == 'Disabled' %}
 
+{% assign sca_title = "Estimated Shipping Cost" %}
+{% if settings.shipping_calculator_heading != null %}
+  {% assign sca_title = settings.shipping_calculator_heading %}
+{% endif %}
+{% assign sca_calculate = "Calculate Shipping" %}
+{% if settings.shipping_calculator_submit_button_label != null %}
+  {% assign sca_calculate = settings.shipping_calculator_submit_button_label %}
+{% endif %}
+{% assign sca_calculating = "Calculating..." %}
+{% if settings.shipping_calculator_submit_button_label_disabled != null %}
+  {% assign sca_calculating = settings.shipping_calculator_submit_button_label_disabled %}
+{% endif %}
+
+
 <div id="shipping-calculator">
     
   <h3>{{ settings.shipping_calculator_heading }}</h3>
