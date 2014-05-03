@@ -30,7 +30,15 @@ if (typeof Shopify.Cart === 'undefined') {
   Shopify.Cart = {}
 }
 // Creating a module to encapsulate this.
-Shopify.Cart.ShippingCalculator = (function() {  
+Shopify.Cart.ShippingCalculator = (function() {
+  
+  // Extend liquid.js with money filter
+  Liquid.registerFilters({
+    money: function(input) {
+      return _formatRate(input);
+    } 
+  });
+  
   var _config = {
     submitButton: 'Calculate shipping', 
     submitButtonDisabled: 'Calculating...',
@@ -43,7 +51,9 @@ Shopify.Cart.ShippingCalculator = (function() {
     var template = jQuery('#' + _config.templateId);
     var wrapper = jQuery('#' + _config.wrapperId);      
     if (template.length && wrapper.length) {
-      template.tmpl(response).appendTo(wrapper);
+      var src = Liquid.parse(template.html());
+      var compiled = src.render(response);      
+      wrapper.html(compiled);
       if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
         var newCurrency = '';
         if (jQuery('[name=currencies]').size()) {
