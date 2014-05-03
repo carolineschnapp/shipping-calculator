@@ -27,30 +27,30 @@
 
 <script id="shipping-calculator-response-template" type="text/x-jquery-tmpl">
   {% raw %}
-  <p id="shipping-rates-feedback" class="{{if success}}success{{else}}error{{/if}}">
-  {{if success}}
-    {{if rates.length > 1}}
-    There are ${rates.length} shipping rates available for ${address}, starting at {{html Shopify.Cart.ShippingCalculator.formatRate(rates[0].price)}}.
-    {{else}}
-      {{if rates.length == 1}}
-      There is one shipping rate available for ${address}.
-      {{else}}
+  <p id="shipping-rates-feedback" class="{% if success %}success{% else %}error{% endif %}">
+  {% if success %}
+    {% if rates.length > 1 %}
+    There are {{ rates.length }} shipping rates available for {{ address }}, starting at {{ rates[0].price | money }}.
+    {% else %}
+      {% if rates.length == 1 %}
+      There is one shipping rate available for {{ address }}.
+      {% else %}
       We do not ship to this destination.
-      {{/if}}
-    {{/if}}
-  {{else}}
-    ${errorFeedback}
-  {{/if}}
+      {% endif %}
+    {% endif %}
+  {% else %}
+    {{ errorFeedback }}
+  {% endif %}
   </p>
   <ul id="shipping-rates">
-    {{each( index, rate ) rates}}
-    <li>${rate.name} at {{html Shopify.Cart.ShippingCalculator.formatRate(rate.price)}}</li>
-    {{/each}}
+    {% for rate in rates %}
+    <li>{{ rate.name }} at {{ rate.price | money }}</li>
+    {% endfor %}
   </ul>
   {% endraw %} 
 </script>
 
-{{ "//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" | script_tag }}
+{{ "liquid..min.js" | asset_url | script_tag }}
 {{ "/services/javascripts/countries.js" | script_tag }}
 {{ "shopify_common.js" | shopify_asset_url | script_tag }}
 {{ "jquery.cart.min.js" | asset_url | script_tag }} 
