@@ -27,3 +27,6 @@
 #shipping-calculator .field:last-child:before { 
   content: "\00A0"; display: block; margin: 0 0 .3em; font-size: 1em; 
 }
+#shipping-calculator #wrapper-response { 
+  clear: both; 
+}
