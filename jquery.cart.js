@@ -1,7 +1,7 @@
 /**
  * Module to add a shipping rates calculator to cart page.
  *
- * Copyright (c) 2011-2012 Caroline Schnapp (11heavens.com)
+ * Copyright (c) 2011-2014 Caroline Schnapp (11heavens.com)
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
@@ -37,13 +37,15 @@ Shopify.Cart.ShippingCalculator = (function() {
     templateId: 'shipping-calculator-response-template',
     wrapperId: 'wrapper-response',
     customerIsLoggedIn: false,
-    moneyFormat: '$ {{amount}}'
+    moneyFormat: '${{amount}}'
   };  
-  var _render = function(response) {    
+  var _render = function(response) {
     var template = jQuery('#' + _config.templateId);
-    var wrapper = jQuery('#' + _config.wrapperId);      
+    var wrapper = jQuery('#' + _config.wrapperId);
     if (template.length && wrapper.length) {
-      template.tmpl(response).appendTo(wrapper);
+      var myTemplate = _.template(template.text());
+      var compiled = myTemplate(response);
+      $(compiled).appendTo(wrapper);
       if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
         var newCurrency = '';
         if (jQuery('[name=currencies]').size()) {
@@ -53,7 +55,7 @@ Shopify.Cart.ShippingCalculator = (function() {
           newCurrency = jQuery('#currencies span.selected').attr('data-currency');
         }
         if (newCurrency !== '') {
-          Currency.convertAll(shopCurrency, newCurrency, '#wrapper-response span.money, #estimated-shipping em span.money');
+          Currency.convertAll(shopCurrency, newCurrency, '#wrapper-response span.money, #estimated-shipping span.money');
         }
       }
     }
@@ -126,7 +128,10 @@ Shopify.Cart.ShippingCalculator = (function() {
       }
       else {
         jQuery('#estimated-shipping em').html(_formatRate(rates[0].price));
-      }      
+      }
+      for (var i=0; i<rates.length; i++) {
+        rates[i].price = _formatRate(rates[i].price);
+      }
     }
     // Show rates and feedback.
     _render( { rates: rates, address: readable_address, success:true } );
@@ -135,33 +140,38 @@ Shopify.Cart.ShippingCalculator = (function() {
   };
   var _formatRate = function(cents) {
     if (typeof cents == 'string') cents = cents.replace('.','');
+    cents = cents / 100.0;
     var value = '';
     var patt = /\{\{\s*(\w+)\s*\}\}/;
     var formatString = _config.moneyFormat;
-    function addCommas(moneyString) {
-      return moneyString.replace(/(\d+)(\d{3}[\.,]?)/,'$1,$2');
-    }
-    function floatToString(numeric, decimals) {  
-      var amount = numeric.toFixed(decimals).toString();  
-      if(amount.match(/^\.\d+/)) {return "0"+amount; }
-      else { return amount; }
-    }
+    function floatToString(numeric, dec, dsep, tsep) {
+      if (isNaN(numeric) || numeric == null) {
+        return '0';
+      }
+      numeric = numeric.toFixed(dec);
+      if (typeof tsep !== 'string') {
+        tsep = ',';
+      }
+      var parts = numeric.split('.');
+      var decimals = parts[1] ? (dsep || '.') + parts[1] : '';
+      return parts[0].replace(/(\d)(?=(?:\d{3})+$)/g, '$1' + tsep) + decimals;
+    };
     switch(formatString.match(patt)[1]) {
-      case 'amount':
-        value = addCommas(floatToString(cents/100.0, 2));
-        break;
-      case 'amount_no_decimals':
-        value = addCommas(floatToString(cents/100.0, 0));
-        break;
-      case 'amount_with_comma_separator':
-        value = floatToString(cents/100.0, 2).replace(/\./, ',');
-        break;
-      case 'amount_no_decimals_with_comma_separator':
-        value = addCommas(floatToString(cents/100.0, 0)).replace(/\./, ',');
-        break;
+    case 'amount':
+      value = floatToString(cents,2);
+      break;
+    case 'amount_no_decimals':
+      value = floatToString(cents,0);
+      break;
+    case 'amount_with_comma_separator':
+      value = floatToString(cents,2,',','.');
+      break;
+    case 'amount_no_decimals_with_comma_separator':
+      value = floatToString(cents,0,',','.');
+      break;
     }
-    return formatString.replace(patt, value);        
-  };  
+    return formatString.replace(patt, value);
+  };
   _init = function() {
     // Initialize observer on shipping address.
     new Shopify.CountryProvinceSelector('address_country', 'address_province', { hideElement: 'address_province_container' } );
@@ -194,14 +204,14 @@ Shopify.Cart.ShippingCalculator = (function() {
   };
   return {
     show: function(params) {
-        // Configuration
-        params = params || {};
-        // Merging with defaults.
-        jQuery.extend(_config, params);
-        // Action
-        jQuery(function() {
-          _init();
-        });
+      // Configuration
+      params = params || {};
+      // Merging with defaults.
+      jQuery.extend(_config, params);
+      // Action
+      jQuery(function() {
+        _init();
+      });
     },    
     getConfig: function() {
       return _config;

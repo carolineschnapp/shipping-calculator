@@ -3,10 +3,10 @@ To use in Shopify to add a shipping rates calculator to the cart page. Relies on
 h2. Dependencies
 
 jQuery >= 1.4
-jQuery template plugin ("http://api.jquery.com/category/plugins/templates":http://api.jquery.com/category/plugins/templates)
+Underscore.js for template ("http://underscorejs.org/#template":http://underscorejs.org/#template)
 shopify_common.js
 countries.js
 
 h2. Installation
 
-"http://wiki.shopify.com/Adding_a_Shipping_Rates_Calculator_to_your_Cart_Page":http://wiki.shopify.com/Adding_a_Shipping_Rates_Calculator_to_your_Cart_Page
+"Add a shipping rates calculator to your cart page":http://docs.shopify.com/manual/configuration/store-customization/page-specific/cart-page/add-shipping-rates-calculator
