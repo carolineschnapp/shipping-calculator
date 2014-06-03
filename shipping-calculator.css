@@ -1,1 +1,29 @@
-.field{clear:both;margin:0 0 1em;font-size:15px}.field:last-child{margin-bottom:1em}.field:after,.field:before{content:"";display:table}.field:after{clear:both}.field{zoom:1}.field>label{margin:0 0 .3em;display:block;font-size:1em}.field input[type=checkbox]+label,.field input[type=radio]+span{display:inline;padding-left:.3em;vertical-align:middle;font-size:1em}.field input[type=date],.field input[type=email],.field input[type=number],.field input[type=password],.field input[type=tel],.field input[type=text],.field input[type=url],.field textarea{margin:0;padding:.85em 1.2em;font-size:.95em;background-color:#FFF;border:1px solid rgba(0,0,0,.15);outline:0;color:rgba(0,0,0,.7);border-radius:.3125em;-webkit-transition:background-color .3s ease-out,-webkit-box-shadow .2s ease,border-color .2s ease;transition:background-color .3s ease-out,box-shadow .2s ease,border-color .2s ease;-webkit-box-shadow:0 0 rgba(0,0,0,.3)inset;box-shadow:0 0 rgba(0,0,0,.3)inset;-webkit-appearance:none;-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;box-sizing:border-box;max-width:100%}.field textarea{line-height:1.33;min-height:8em;height:12em;max-height:24em;width:100%;resize:vertical}.field input[type=radio]{-webkit-appearance:radio}.field input[type=checkbox],.field input[type=radio]{vertical-align:middle}
+#shipping-calculator .field {
+  float: left;
+  margin: 0 .3em 1em;
+  font-size: 15px
+}  
+#shipping-calculator .field label {
+  display: block;
+  margin: 0 0 .3em;
+  font-size: 1em;
+}
+#shipping-calculator .field input[type=text] {
+  display: inline-block;
+  width: 150px;
+  max-width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: .4em .6em;
+  font-size: 1em;
+  border: 1px solid rgba(0,0,0,.15);
+  outline: 0;
+  border-radius: .3125em;
+  -webkit-appearance: none;
+}  
+#shipping-calculator .field:last-child:before { 
+  content: "\00A0"; display: block; margin: 0 0 .3em; font-size: 1em; 
+}
