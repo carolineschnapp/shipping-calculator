@@ -139,38 +139,42 @@ Shopify.Cart.ShippingCalculator = (function() {
     jQuery('#' + _config.wrapperId + ', #estimated-shipping').fadeIn();
   };
   var _formatRate = function(cents) {
-    if (typeof cents == 'string') cents = cents.replace('.','');
-    cents = cents / 100.0;
+    if (typeof Shopify.formatMoney === 'function') {
+      return Shopify.formatMoney(cents, _config.moneyFormat);
+    }    
+    if (typeof cents == 'string') { cents = cents.replace('.',''); }
     var value = '';
-    var patt = /\{\{\s*(\w+)\s*\}\}/;
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
     var formatString = _config.moneyFormat;
-    function floatToString(numeric, dec, dsep, tsep) {
-      if (isNaN(numeric) || numeric == null) {
-        return '0';
-      }
-      numeric = numeric.toFixed(dec);
-      if (typeof tsep !== 'string') {
-        tsep = ',';
-      }
-      var parts = numeric.split('.');
-      var decimals = parts[1] ? (dsep || '.') + parts[1] : '';
-      return parts[0].replace(/(\d)(?=(?:\d{3})+$)/g, '$1' + tsep) + decimals;
-    };
-    switch(formatString.match(patt)[1]) {
-    case 'amount':
-      value = floatToString(cents,2);
-      break;
-    case 'amount_no_decimals':
-      value = floatToString(cents,0);
-      break;
-    case 'amount_with_comma_separator':
-      value = floatToString(cents,2,',','.');
-      break;
-    case 'amount_no_decimals_with_comma_separator':
-      value = floatToString(cents,0,',','.');
-      break;
+    function defaultOption(opt, def) {
+       return (typeof opt == 'undefined' ? def : opt);
     }
-    return formatString.replace(patt, value);
+    function formatWithDelimiters(number, precision, thousands, decimal) {
+      precision = defaultOption(precision, 2);
+      thousands = defaultOption(thousands, ',');
+      decimal   = defaultOption(decimal, '.');
+      if (isNaN(number) || number == null) { return 0; }
+      number = (number/100.0).toFixed(precision);
+      var parts   = number.split('.'),
+          dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+          cents   = parts[1] ? (decimal + parts[1]) : '';
+      return dollars + cents;
+    }
+    switch(formatString.match(placeholderRegex)[1]) {
+      case 'amount':
+        value = formatWithDelimiters(cents, 2);
+        break;
+      case 'amount_no_decimals':
+        value = formatWithDelimiters(cents, 0);
+        break;
+      case 'amount_with_comma_separator':
+        value = formatWithDelimiters(cents, 2, '.', ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = formatWithDelimiters(cents, 0, '.', ',');
+        break;
+    }
+    return formatString.replace(placeholderRegex, value);
   };
   _init = function() {
     // Initialize observer on shipping address.

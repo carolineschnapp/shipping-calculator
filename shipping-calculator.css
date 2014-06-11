@@ -1,6 +1,6 @@
 #shipping-calculator .field {
   float: left;
-  margin: 0 .3em 1em;
+  margin: 0 0.6em 1em 0;
   font-size: 15px
 }  
 #shipping-calculator .field label {
