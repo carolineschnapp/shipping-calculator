@@ -1,0 +1,25 @@
+{
+  "name": "shopify-shipping-calculator",
+  "version": "0.0.0",
+  "homepage": "https://github.com/carolineschnapp/shipping-calculator",
+  "authors": [
+    "Caroline Schnapp <mllegeorgesand@gmail.com>"
+  ],
+  "description": "To use in Shopify to add a shipping rates calculator to the cart page. Requires jQuery.",
+  "main": "jquery.cart.js",
+  "keywords": [
+    "shopify",
+    "shipping",
+    "calculator",
+    "jquery",
+    "cart"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
