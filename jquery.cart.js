@@ -18,7 +18,7 @@ if (typeof Countries === 'object') {
         if (provinceLabelElement === null) return;
       }
       provinceLabelElement.innerHTML = Countries[country].label;
-      var provinceContainer = $(provinceLabelElement).parent();
+      var provinceContainer = jQuery(provinceLabelElement).parent();
       var provinceSelect = provinceContainer.find('select');
       provinceContainer.find('.custom-style-select-box-inner').html(Countries[country].provinces[0]);
     }
@@ -43,9 +43,9 @@ Shopify.Cart.ShippingCalculator = (function() {
     var template = jQuery('#' + _config.templateId);
     var wrapper = jQuery('#' + _config.wrapperId);
     if (template.length && wrapper.length) {
-      var myTemplate = _.template(template.text());
+      var myTemplate = _.template(jQuery.trim(template.text()));
       var compiled = myTemplate(response);
-      $(compiled).appendTo(wrapper);
+      jQuery(compiled).appendTo(wrapper);
       if (typeof Currency !== 'undefined' && typeof Currency.convertAll === 'function') {
         var newCurrency = '';
         if (jQuery('[name=currencies]').size()) {
