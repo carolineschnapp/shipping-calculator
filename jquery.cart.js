@@ -66,24 +66,31 @@ Shopify.Cart.ShippingCalculator = (function() {
   var _disableButtons = function() {
     jQuery('.get-rates').val(_config.submitButtonDisabled).attr('disabled','disabled').addClass('disabled');
   };
-  // ---------------------------------------------------------
-  // GET cart/shipping_rates.js returns the cart in JSON.
-  // ---------------------------------------------------------
-  var _getCartShippingRatesForDestination = function(shipping_address) {
+  var _getCartShippingRatesForDestination = function(shippingAddress) {
     var params = {
-      type: 'GET',
-      url: '/cart/shipping_rates.json',
-      data: jQuery.param({'shipping_address': shipping_address}),
-      dataType: 'json',
-      success: function(response) { 
-        rates = response.shipping_rates
-        _onCartShippingRatesUpdate(rates, shipping_address);
-      },
-      error: function(XMLHttpRequest, textStatus) {
-        _onError(XMLHttpRequest, textStatus);
+        type: 'POST',
+        url: '/cart/prepare_shipping_rates',
+        data: jQuery.param({'shipping_address': shippingAddress}),
+        success: _pollForCartShippingRatesForDestination(shippingAddress),
+        error: _onError
       }
-    }
     jQuery.ajax(params);
+  };
+  var _pollForCartShippingRatesForDestination = function(shippingAddress) {
+    var poller = function() {
+      jQuery.ajax('/cart/async_shipping_rates', {
+        dataType: 'json',
+        success: function(response, textStatus, xhr) {
+          if (xhr.status === 200) {
+            _onCartShippingRatesUpdate(response.shipping_rates, shippingAddress)
+          } else {
+            setTimeout(poller, 500)
+          }
+        },
+        error: _onError
+      })
+    }
+    return poller;
   };
   var _fullMessagesFromErrors = function(errors) {
     var fullMessages = [];
@@ -92,7 +99,7 @@ Shopify.Cart.ShippingCalculator = (function() {
         fullMessages.push(attribute + ' ' + message);
       });
     });
-    return fullMessages
+    return fullMessages;
   };
   var _onError = function(XMLHttpRequest, textStatus) {
     jQuery('#estimated-shipping').hide();
@@ -106,7 +113,7 @@ Shopify.Cart.ShippingCalculator = (function() {
       feedback = data.message + '(' + data.status  + '): ' + data.description;
     } 
     else {
-      feedback = 'Error : ' + _fullMessagesFromErrors(data).join('; ');
+      feedback = 'Error : ' + _fullMessagesFromErrors(data).join('; ') + '.';
     }    
     if (feedback === 'Error : country is not supported.') feedback = 'We do not ship to this destination.';
     // Update calculator.
