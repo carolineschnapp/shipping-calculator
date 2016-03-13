@@ -43,6 +43,11 @@ Shopify.Cart.ShippingCalculator = (function() {
     var template = jQuery('#' + _config.templateId);
     var wrapper = jQuery('#' + _config.wrapperId);
     if (template.length && wrapper.length) {
+      _.templateSettings = {
+        evaluate: /<%([\s\S]+?)%>/g,
+        interpolate: /<%=([\s\S]+?)%>/g,
+        escape: /<%-([\s\S]+?)%>/g
+      };
       var myTemplate = _.template(jQuery.trim(template.text()));
       var compiled = myTemplate(response);
       jQuery(compiled).appendTo(wrapper);
