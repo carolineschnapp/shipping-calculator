@@ -30,7 +30,7 @@
   <p id="shipping-rates-feedback" <% if (success) { %> class="success" <% } else { %> class="error" <% } %>>
   <% if (success) { %>
     <% if (rates.length > 1) { %> 
-    There are <%= rates.length %> shipping rates available for <%= address %>, starting at <%= rates[0].price %>.
+    There are <%= rates.length %> shipping rates available for <%- address %>, starting at <%= rates[0].price %>.
     <% } else if (rates.length == 1) { %>
     There is one shipping rate available for <%- address %>.
     <% } else { %>
